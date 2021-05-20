@@ -3,25 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOWNLOAD</title>
+    <title>Converting....</title>
     <link rel="stylesheet" type="text/css" href="{{url_for('static',filename="styles/main.css")}}">
     <link rel="icon"  href="{{ url_for('static',filename='styles/images/icon bfh.jpg') }}">
 </head>
 <body>
     <div class="center">
-        <h1>  Conversion Completed!! </h1>
-        <div style="text-align:center;">
-        <H3>Download your converted file here</H3>
-        </div>
-
+        <H1>Click On Convert To begin Conversion </H1>
+    <form action = "{{ request.path }}" method = "post">
         <br>
-        <a href="{{url_for('mainpage')}}">Go back to mainpage</a>
+        <input type = "submit" value = "Convert" />
         <br>
-        <div style="text-align:center;">
-    <a class= "floop" href="/return-files/{{filename}}" >Download</a>
+        <br>
+    </form>
     </div>
-    <br>
-    <br>
-</div>
+
 </body>
 </html>

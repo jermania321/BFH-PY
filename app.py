@@ -3,12 +3,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import re
+import os
 import numpy as np
 from cv2 import VideoWriter, VideoWriter_fourcc
 import cv2 as cv
 import librosa
 import ffmpeg
-import os
 
 screen_width = 1920
 screen_height = 1080
@@ -41,7 +41,7 @@ def main(filename):
     # Make sense of audio
     VidName = f'{filename}_TEMP.avi'
 
-    ts, sr = librosa.load("/savedfile/"+filename)
+    ts, sr = librosa.load(UPLOAD_FOLDER + filename)
     max_freq = 10000
     stft = np.abs(librosa.stft(ts, hop_length=512, n_fft=2048*4))
     spectrogram = librosa.amplitude_to_db(stft, ref=np.max)
@@ -83,8 +83,7 @@ def main(filename):
         #     bar_count += 1
         bar_heights = []
         for i in range(0, max_freq, freq_step):
-            x = np.mean(spectrogram[int(i*freq_index_ratio)
-                        :int((i+freq_step)*freq_index_ratio), time_frame])
+            x = np.mean(spectrogram[int(i*freq_index_ratio):int((i+freq_step)*freq_index_ratio), time_frame])
             bar_heights.append(bar_max_height*(80+x)/80)
         no_of_available_divisions = len(bar_heights)
         for each in bars:
@@ -106,10 +105,10 @@ def main(filename):
     video.release()
 
     input_video = ffmpeg.input(VidName)
-    input_audio = ffmpeg.input(filename)
+    input_audio = ffmpeg.input(UPLOAD_FOLDER + filename)
     try:
         ffmpeg.concat(input_video, input_audio, v=1, a=1).output(
-            f'{filename}_finished.mp4').run()
+            UPLOAD_FOLDER + filename+'_finished.mp4').run()
     except ffmpeg.Error as e:
         print(e.stderr)
     if os.path.exists(VidName):
@@ -126,8 +125,9 @@ def clamp(min_value, max_value, value):
 
     return value
 
-
 # Functions
+
+
 regex = '^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
 
 
@@ -149,8 +149,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.sqlite3'
 app.config['SECRET_KEY'] = "random string"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-
+app.config['ALLOWED_VIDEO_EXTENSIONS'] = ["MP3", "WAV", "AAC", "FLAC"]
+app.config['MAX_IMAGE_FILESIZE'] = 5 * 1024 * 1024  # 5mb
 db = SQLAlchemy(app)
 
 # User Class
@@ -170,6 +170,26 @@ class usrInfo(db.Model):
 # Routes
 
 
+def allowed_image_filesize(filesize):
+    if int(filesize) <= app.config['MAX_IMAGE_FILESIZE']:
+        return True
+    else:
+        return False
+
+
+def allowed_video(filename):
+
+    if not "." in filename:
+        return False
+
+    ext = filename.rsplit(".", 1)[1]
+
+    if ext.upper() in app.config['ALLOWED_VIDEO_EXTENSIONS']:
+        return True
+    else:
+        return False
+
+
 @app.route('/')
 def mainred():
     return redirect("/main")
@@ -184,18 +204,39 @@ def mainpage():
                 print('no filename')
                 return redirect(request.url)
             else:
+                file.seek(0, 2)
+                file_length = file.tell()
+                if not allowed_image_filesize(file_length):
+                    flash("Please put file less than 5MB")
+                    return redirect(request.url)
+                file.seek(0)
+
+                if not allowed_video(file.filename):
+                    flash("This Video extension is not Allowed")
+                    return redirect(request.url)
+
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 print("saved file successfully")
-                main(filename)
-                session["filename"] = filename + "_finished.mp4"
-                return redirect(url_for("download"))
+                session["filename"] = filename
+                return redirect(url_for("convirting"))
     if "user" in session:
         usrname = session["user"]
     else:
         usrname = None
-
+    print(usrname)
     return render_template("main.html", name=usrname)
+
+
+@app.route('/convirting', methods=['GET', 'POST'])
+def convirting():
+    if request.method == "POST":
+        filename = session["filename"]
+        main(filename)
+        session["filename"] = f'{filename}_finished.mp4'
+        os.remove(UPLOAD_FOLDER+filename)
+        return redirect(url_for("download"))
+    return render_template("convirting.html")
 
 
 @app.route('/download')
@@ -205,19 +246,6 @@ def download():
     else:
         return redirect(url_for("mainpage"))
     return render_template("download.html", filename=None)
-
-
-@app.route('/progress')
-def progress():
-    def generate():
-        x = 0
-
-        while x <= 100:
-            yield "data:" + str(x) + "\n\n"
-            x = x + 10
-            time.sleep(0.5)
-
-    return Response(generate(), mimetype='text/event-stream')
 
 
 @app.route('/return-files/<filename>')
@@ -273,6 +301,14 @@ def login():
             session["user"] = usr
             return redirect(url_for('mainpage'))
     return render_template("login.html")
+
+
+@app.route("/adminclear")
+def adminclear():
+    for f in os.listdir(UPLOAD_FOLDER):
+        if f != "keep.txt":
+            os.remove(os.path.join(UPLOAD_FOLDER, f))
+    return redirect(url_for("mainpage"))
 
 
 @app.route('/delete/<int:id>')

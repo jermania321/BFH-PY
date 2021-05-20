@@ -4,12 +4,17 @@
         <meta charset="utf-8">
         <title>Main</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/main.css') }}">
+        <link rel="icon"  href="{{ url_for('static',filename='styles/images/icon bfh.jpg') }}">
       </head>
    <body>
        <div class="center">
         <h1>WELCOME TO AUDIOVISUALICA</h1>
 
     <div class="txt_field">
+        {%- for category, message in get_flashed_messages(with_categories = true) %}
+        <div style="text-align:center;">  {{ message }} </div>
+        {%- endfor %}
+
        {% if name == None %}
        <div style="text-align:center;">
         <br>
