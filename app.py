@@ -1,8 +1,10 @@
 from flask import Flask, request, flash, url_for, redirect, render_template, session, send_file
+from flask import jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import re
+import threading
 import os
 import numpy as np
 from cv2 import VideoWriter, VideoWriter_fourcc
@@ -16,6 +18,9 @@ FPS = 60
 seconds = 10
 no_of_bars = 100
 left_space = 10
+
+t = threading.Thread()
+rederdercomplete = False
 
 
 class bar:
@@ -37,7 +42,6 @@ class bar:
 
 
 def main(filename):
-
     # Make sense of audio
     VidName = f'{filename}_TEMP.avi'
 
@@ -113,6 +117,9 @@ def main(filename):
         print(e.stderr)
     if os.path.exists(VidName):
         os.remove(VidName)
+    global rederdercomplete
+    rederdercomplete = True
+    print("render complete")
 
 
 def clamp(min_value, max_value, value):
@@ -194,6 +201,13 @@ def allowed_video(filename):
 def mainred():
     return redirect("/main")
 
+@app.route('/status')
+def thread_status():
+    global rederdercomplete
+    """ Return the status of the worker thread """
+    print()
+    return jsonify(dict(status=('finished' if rederdercomplete else 'running')))
+
 
 @app.route('/main', methods=['GET', 'POST'])
 def mainpage():
@@ -228,20 +242,33 @@ def mainpage():
     return render_template("main.html", name=usrname)
 
 
-@app.route('/convirting', methods=['GET', 'POST'])
+@app.route('/convert', methods=['GET', 'POST'])
 def convirting():
     if request.method == "POST":
         filename = session["filename"]
-        main(filename)
-        session["filename"] = f'{filename}_finished.mp4'
-        os.remove(UPLOAD_FOLDER+filename)
-        return redirect(url_for("download"))
+        t = threading.Thread(target=main,args=(filename,))
+        t.daemon = True
+        t.start()
+        return redirect(url_for("converting"))
     return render_template("convirting.html")
+
+@app.route("/converting")
+def converting():
+    global rederdercomplete
+    print(rederdercomplete)
+    if rederdercomplete  and session["filename"] != None:
+        filename = session["filename"]
+        session["filename"] = f'{filename}_finished.mp4'
+        print(session["filename"])
+        os.remove(UPLOAD_FOLDER+filename)
+        return redirect("/download")
+    return render_template("convert.html")
 
 
 @app.route('/download')
 def download():
     if "filename" in session:
+        print(session["filename"])
         return render_template("download.html", filename=session["filename"])
     else:
         return redirect(url_for("mainpage"))
@@ -251,6 +278,7 @@ def download():
 @app.route('/return-files/<filename>')
 def return_files_tut(filename):
     file_path = UPLOAD_FOLDER + filename
+    print(file_path)
     return send_file(file_path, as_attachment=True, attachment_filename='')
 
 
