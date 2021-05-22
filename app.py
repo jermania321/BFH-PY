@@ -22,6 +22,7 @@ max_freq = 600
 division_number = 1.1**65
 t = threading.Thread()
 rederdercomplete = False
+renderfilename = None
 
 
 class bar:
@@ -144,8 +145,11 @@ def main(filename):
         print(e.stderr)
     if os.path.exists(VidName):
         os.remove(VidName)
-    global rederdercomplete
+    global rederdercomplete,renderfilename
     rederdercomplete =  True
+    print(renderfilename)
+    renderfilename = filename
+    print(renderfilename)
     print("Render Complete")
 
 
@@ -278,9 +282,12 @@ def convirting():
 
 @app.route("/converting")
 def converting():
-    global rederdercomplete
+    global rederdercomplete,renderfilename
     print(rederdercomplete)
-    if rederdercomplete  and session["filename"] != None:
+    if rederdercomplete:
+        print(renderfilename)
+        print(session["filename"])
+    if rederdercomplete  and session["filename"] == renderfilename:
         rederdercomplete == False
         filename = session["filename"]
         session["filename"] = f'{filename}_finished.mp4'
@@ -294,7 +301,9 @@ def converting():
 def download():
     if "filename" in session:
         print(session["filename"])
-        return render_template("download.html", filename=session["filename"])
+        filename = session["filename"]
+        session.pop("filename",None)
+        return render_template("download.html", filename=filename)
     else:
         return redirect(url_for("mainpage"))
     return render_template("download.html", filename=None)
@@ -408,6 +417,8 @@ def change():
 def logout():
     # global loginUsr
     session.pop("user", None)
+    if "filename" in session:
+        session.pop("filename", None)
     return redirect(url_for("mainpage"))
 
 
