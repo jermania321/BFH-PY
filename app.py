@@ -12,8 +12,8 @@ import cv2 as cv
 import librosa
 import ffmpeg
 
-screen_width = 1280
-screen_height = 720
+screen_width = 1920
+screen_height = 1080
 FPS = 30
 seconds = 10
 no_of_bars = 120
@@ -26,7 +26,7 @@ renderfilename = None
 
 
 class bar:
-    def __init__(self, x, y, color, max_height = 100, min_height = 5, width = 10, height_decibel_ratio = 0.5):
+    def __init__(self, x, y, color, max_height=100, min_height=5, width=10, height_decibel_ratio=0.5):
         self.x, self.y = x, y
         self.color = color
         self.max_height, self.min_height = max_height, min_height
@@ -44,15 +44,14 @@ class bar:
 
 def main(filename):
 
-    #Make sense of audio
+    # Make sense of audio
 
     VidName = f'{filename}_TEMP.avi'
-    
+
     no_of_circles = 4
 
-
     ts, sr = librosa.load(UPLOAD_FOLDER + filename)
-    stft = np.abs(librosa.stft(ts, hop_length = 512, n_fft = 2048*4))
+    stft = np.abs(librosa.stft(ts, hop_length=512, n_fft=2048*4))
     spectrogram = librosa.amplitude_to_db(stft, ref=np.max)
     # frequencies = librosa.core.fft_frequencies(n_fft=2048*4)
     # freq_index_ratio = len(frequencies)/frequencies[-1]
@@ -62,27 +61,24 @@ def main(filename):
     print("duration", music_duration)
     seconds = int(music_duration)
 
-    #Video things
+    # Video things
     fourcc = VideoWriter_fourcc(*'MP42')
-    video = VideoWriter(VidName, fourcc, float(FPS), (screen_width, screen_height))
+    video = VideoWriter(VidName, fourcc, float(FPS),
+                        (screen_width, screen_height))
 
     bar_width = int((screen_width-left_space)/no_of_bars)
     bar_max_height = int(screen_height*8/14)
     bars = []
     for number in range(no_of_bars):
-        bars.append(bar(left_space*number, 20, (255,0,0), bar_max_height, 30, bar_width))
-    
+        bars.append(bar(left_space*number, 20, (255, 0, 0),
+                    bar_max_height, 30, bar_width))
 
     for video_frame_no in range(FPS*seconds):
-        time_frame = librosa.core.time_to_frames(video_frame_no/FPS, sr = sr)
+        time_frame = librosa.core.time_to_frames(video_frame_no/FPS, sr=sr)
 
         video_frame = np.empty((screen_height, screen_width, 3), np.uint8)
         # video_frame.fill(255)
-        video_frame[:][:] = [52, 42, 37] # [37, 42, 52]
-        
-
-
-
+        video_frame[:][:] = [52, 42, 37]  # [37, 42, 52]
 
         bar_count = 0
         # for each in bars:
@@ -96,29 +92,32 @@ def main(filename):
         #     bar_count += 1
         bar_heights = []
         # for i in range(10, max_freq, freq_step):
-        #     x = np.mean(spectrogram[int(i*freq_index_ratio):int((i+freq_step)*freq_index_ratio), time_frame])  
+        #     x = np.mean(spectrogram[int(i*freq_index_ratio):int((i+freq_step)*freq_index_ratio), time_frame])
         #     bar_heights.append(
         #         clamp(bar_max_height, bar_max_height*(1.1**(80+x))/1.1**65)
-        #         )   
+        #         )
         len_of_freq = len(spectrogram.T[time_frame])
         no_of_els_to_add = (freq_step - len_of_freq % freq_step)
         x = np.pad(spectrogram.T[time_frame], (0, no_of_els_to_add))
-        mean = np.mean(x.reshape(-1, freq_step), axis = 1)
+        mean = np.mean(x.reshape(-1, freq_step), axis=1)
         # bar_heights = np.power(1.1, np.mean(x.reshape(-1, freq_step), axis = 1)+ 80)*bar_max_height/1.1**65
         # bar_heights = (np.mean(x.reshape(-1, freq_step), axis = 1)+ 80)*bar_max_height/80*1.2
-        bar_heights = bar_max_height*((np.power(1.1, (mean + 80))-1)/division_number)
+        bar_heights = bar_max_height * \
+            ((np.power(1.1, (mean + 80))-1)/division_number)
         bar_heights[bar_heights > bar_max_height] = bar_max_height
         w = 3
-        bar_heights_convolved = np.convolve(bar_heights, np.ones(w), 'valid') / w 
-        
+        bar_heights_convolved = np.convolve(
+            bar_heights, np.ones(w), 'valid') / w
 
         circleradi = ((mean+80)/80*300).astype(int)
         # cv.circle(video_frame, (int(screen_width/2), int(screen_height/3)), 7, (30,174,152)[::-1], -1)
-        cv.circle(video_frame, (int(screen_width/2), int(screen_height/3)), 50*int(circleradi[3]/300), (30,174,152)[::-1], -1)
-        colors = [(8,217,214), (255,46,99), (234,234,234), (31,171,137)]
+        cv.circle(video_frame, (int(screen_width/2), int(screen_height/3)),
+                  50*int(circleradi[3]/300), (30, 174, 152)[::-1], -1)
+        colors = [(8, 217, 214), (255, 46, 99),
+                  (234, 234, 234), (31, 171, 137)]
         for j in range(no_of_circles):
-            cv.circle(video_frame, (int(640*(j)), int(screen_height/3)), circleradi[100*j+no_of_bars], colors[j][::-1], 5)
-            
+            cv.circle(video_frame, (int(640*(j)), int(screen_height/3)),
+                      circleradi[100*j+no_of_bars], colors[j][::-1], 5)
 
         no_of_available_divisions = len(bar_heights)
         for each in bars:
@@ -127,11 +126,13 @@ def main(filename):
             barBottom = screen_height - each.min_height
             barRight = each.x + (bar_width)*(bar_count+1) + left_space
             if(bar_count < no_of_available_divisions):
-                barTop = screen_height - int(bar_heights_convolved[bar_count]) -each.min_height
+                barTop = screen_height - \
+                    int(bar_heights_convolved[bar_count]) - each.min_height
             else:
-                barTop = screen_height -each.min_height
+                barTop = screen_height - each.min_height
 
-            cv.rectangle(video_frame, (barLeft, barBottom), (barRight, barTop), (bar_count/no_of_bars*244, (no_of_bars- bar_count)/no_of_bars*244, 234), -1)
+            cv.rectangle(video_frame, (barLeft, barBottom), (barRight, barTop), (
+                bar_count/no_of_bars*244, (no_of_bars - bar_count)/no_of_bars*244, 234), -1)
             bar_count += 1
 
         video.write(video_frame)
@@ -140,13 +141,14 @@ def main(filename):
     input_video = ffmpeg.input(VidName)
     input_audio = ffmpeg.input(UPLOAD_FOLDER + filename)
     try:
-        ffmpeg.concat(input_video, input_audio, v=1, a=1).output( UPLOAD_FOLDER + f'{filename}_finished.mp4').run()
+        ffmpeg.concat(input_video, input_audio, v=1, a=1).output(
+            UPLOAD_FOLDER + f'{filename}_finished.mp4').run()
     except ffmpeg.Error as e:
         print(e.stderr)
     if os.path.exists(VidName):
         os.remove(VidName)
-    global rederdercomplete,renderfilename
-    rederdercomplete =  True
+    global rederdercomplete, renderfilename
+    rederdercomplete = True
     print(renderfilename)
     renderfilename = filename
     print(renderfilename)
@@ -229,6 +231,7 @@ def allowed_video(filename):
 def mainred():
     return redirect("/main")
 
+
 @app.route('/status')
 def thread_status():
     global rederdercomplete
@@ -274,20 +277,21 @@ def mainpage():
 def convirting():
     if request.method == "POST":
         filename = session["filename"]
-        t = threading.Thread(target=main,args=(filename,))
+        t = threading.Thread(target=main, args=(filename,))
         t.daemon = True
         t.start()
         return redirect(url_for("converting"))
     return render_template("convirting.html")
 
+
 @app.route("/converting")
 def converting():
-    global rederdercomplete,renderfilename
+    global rederdercomplete, renderfilename
     print(rederdercomplete)
     if rederdercomplete:
         print(renderfilename)
         print(session["filename"])
-    if rederdercomplete  and session["filename"] == renderfilename:
+    if rederdercomplete and session["filename"] == renderfilename:
         rederdercomplete == False
         filename = session["filename"]
         session["filename"] = f'{filename}_finished.mp4'
@@ -302,7 +306,7 @@ def download():
     if "filename" in session:
         print(session["filename"])
         filename = session["filename"]
-        session.pop("filename",None)
+        session.pop("filename", None)
         return render_template("download.html", filename=filename)
     else:
         return redirect(url_for("mainpage"))
