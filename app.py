@@ -14,7 +14,7 @@ import ffmpeg
 
 screen_width = 1280
 screen_height = 720
-FPS = 60
+FPS = 30
 seconds = 10
 no_of_bars = 120
 left_space = 10
