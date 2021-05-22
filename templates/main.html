@@ -20,17 +20,17 @@
         <br>
         
         <a class="bloop" href = "{{ url_for('login') }}">Login</a>
-      </p>
-    </div>
-    </div>
-    <br>
-    <br>
 
+    </div>
+    </div>
+    <br>
+    <br>
+    <div style="text-align:center;">
     <div class="txt_field">
     <a class="floop" href = "{{ url_for('new') }}">Create New Account</a>
+</div>
        <br>
        <br>
-        </p>
            {% else %}
            <div style="text-align:center;">
        <p>logged in as {{name}}</p>
@@ -44,11 +44,13 @@
             </form>
     </div>
     <br>
+    <br>
     <div style="text-align:center;">
 
        <a class="bloop" href="/logout">Log  Out</a>
        </div>
 
+       <br>
        <br>
 
         <div class="txt_field">
