@@ -2,8 +2,9 @@
 # Project Name
 Long Description about project. This project do that. This project is awesome...
 ## Team members
-1. Sidharth M S [Embed personal github URL] (https://github.com/sidharth980
+1. Sidharth M S [Embed personal github URL] https://github.com/sidharth980
 2. Name [Embed perosnal github URL]
+3. Name [Embed perosnal github URL]
 ## Team Id
 BFH/recZxreJLMNOtvhse/2021
 ## Link to product walkthrough
