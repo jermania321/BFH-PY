@@ -13,13 +13,13 @@ BFH/recZxreJLMNOtvhse/2021
 1. Explaining the working of project
 2. Embed video of project demo
 ## Libraries used
-librosa - 0.8.0
-Flask_SQLAlchemy - 2.5.1
-Werkzeug - 1.0.0
-opencv_python - 4.5.2.52
-ffmpeg_python - 0.2.0
-Flask - 1.1.1
-numpy - 1.19.5
+librosa - 0.8.0,
+Flask_SQLAlchemy - 2.5.1,
+Werkzeug - 1.0.0,
+opencv_python - 4.5.2.52,
+ffmpeg_python - 0.2.0,
+Flask - 1.1.1,
+numpy - 1.19.5,
 gunicorn
 ## How to configure
 Instructions for setting up project
