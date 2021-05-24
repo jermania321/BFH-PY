@@ -35,8 +35,6 @@ Once the conversion is complete, an option to donwload the video will show up, c
 
 
 
-Video Demonstration of the App:-https://www.loom.com/share/3d5e92baf9be474d804a489939544c43
-
 ## Libraries used
 librosa - 0.8.0,
 Flask_SQLAlchemy - 2.5.1,
