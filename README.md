@@ -3,7 +3,7 @@
 A web app that a person can upload any music file than then then outputs as a video that contains the music with really nice visualization. Users should create an account to avail this it.
 ## Team members
 1. Sidharth M S [Embed personal github URL](https://github.com/sidharth980)
-2. Name [Embed perosnal github URL]
+2. Jerry Zachariah Jose [Embed perosnal github URL](https://github.com/jermania321)
 3. Name [Embed perosnal github URL]
 ## Team Id
 BFH/recZxreJLMNOtvhse/2021
