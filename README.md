@@ -1,6 +1,6 @@
 ![BFH Banner](https://trello-attachments.s3.amazonaws.com/542e9c6316504d5797afbfb9/542e9c6316504d5797afbfc1/39dee8d993841943b5723510ce663233/Frame_19.png)
 # AudioViz
-A web app that a person can upload any music file than then then outputs as a video that contains the music with really nice visualization. Users should create an account to avail this it.
+A web app that a person can upload any music file that then outputs as a video that contains the music with really nice visualization. Users should create an account to avail this it.
 ## Team members
 1. Sidharth M S [Embed personal github URL](https://github.com/sidharth980)
 2. Jerry Zachariah Jose [Embed perosnal github URL](https://github.com/jermania321)
