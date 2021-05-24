@@ -252,7 +252,7 @@ def mainpage():
                 file.seek(0, 2)
                 file_length = file.tell()
                 if not allowed_image_filesize(file_length):
-                    flash("Please put file less than 5MB")
+                    flash("Please put file less than 2MB")
                     return redirect(request.url)
                 file.seek(0)
 
