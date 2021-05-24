@@ -53,3 +53,4 @@ Ensure the ffmpeg software is installed on the system.
 Open a terminal to the downloaded project folder and run app.py by typing `python app.py` into the terminal and pressing enter.
 Go to the server link to visit the webpage
 Control clicking the localhost link from the terminal should also work
+(while running via the site  depending on the size and complexity of the audio file the time to convert the file to the video format might take more time..)
