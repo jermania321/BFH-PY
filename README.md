@@ -8,10 +8,12 @@ A web app that a person can upload any music file than then then outputs as a vi
 ## Team Id
 BFH/recZxreJLMNOtvhse/2021
 ## Link to product walkthrough
-[link to video]
+https://www.loom.com/share/3d5e92baf9be474d804a489939544c43
 ## How it Works ?
 1. Explaining the working of project
-2. Embed video of project demo
+
+
+3. Embed video of project demo
 ## Libraries used
 librosa - 0.8.0,
 Flask_SQLAlchemy - 2.5.1,
