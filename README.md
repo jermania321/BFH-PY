@@ -4,7 +4,7 @@ A web app that a person can upload any music file than then then outputs as a vi
 ## Team members
 1. Sidharth M S [Embed personal github URL](https://github.com/sidharth980)
 2. Jerry Zachariah Jose [Embed perosnal github URL](https://github.com/jermania321)
-3. Name [Embed perosnal github URL]
+3. Rahul. V [Github link](http://github.com/rzinc)
 ## Team Id
 BFH/recZxreJLMNOtvhse/2021
 ## Link to product walkthrough
