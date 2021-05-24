@@ -31,6 +31,8 @@ The conversion process will now begin and we must simply wait for the computer  
 
 
 Once the conversion is complete, an option to donwload the video will show up, clicking on which downloads an mp4 file which the user can play whenever they want.
+![image](https://user-images.githubusercontent.com/33323329/119375111-09e6a380-bcd8-11eb-81d6-fe4355eeca99.png)
+
 
 
 Video Demonstration of the App:-https://www.loom.com/share/3d5e92baf9be474d804a489939544c43
@@ -45,6 +47,7 @@ Flask - 1.1.1,
 numpy - 1.19.5,
 gunicorn
 ## How to configure
-Instructions for setting up project
+Install the python libraries uses(can be done using pip install).
+Ensure the ffmpeg software is installed on the system.
 ## How to Run
-Instructions for running
+Open a terminal to the downloaded project folder and run app.py by typing `python app.py` into the terminal and pressing enter.
