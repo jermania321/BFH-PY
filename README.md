@@ -1,6 +1,6 @@
 ![BFH Banner](https://trello-attachments.s3.amazonaws.com/542e9c6316504d5797afbfb9/542e9c6316504d5797afbfc1/39dee8d993841943b5723510ce663233/Frame_19.png)
 # AudioViz
-A web app that a person can upload any music file that then outputs as a video that contains the music with really nice visualization. Users should create an account to avail this it.
+Audio Viz is the newest  completely open source, user friendly music visualizer website that allows any user to upload an audio of their liking and get back a video with the most stunning of visuals reacting to the various features of music. Due to the diverse nature of the website, it also allows the users to download the full video entirely for free . We thank you for joining us on our journey to make music into not just an audio experience, but into a full audio video experience like none other before.
 ## Team members
 1. Sidharth M S [Github link](https://github.com/sidharth980)
 2. Jerry Zachariah Jose [Github link](https://github.com/jermania321)
