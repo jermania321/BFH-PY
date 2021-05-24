@@ -187,7 +187,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.sqlite3'
 app.config['SECRET_KEY'] = "random string"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ALLOWED_VIDEO_EXTENSIONS'] = ["MP3", "WAV", "AAC", "FLAC"]
-app.config['MAX_IMAGE_FILESIZE'] = 5 * 1024 * 1024  # 5mb
+app.config['MAX_IMAGE_FILESIZE'] = 2 * 1024 * 1024  # 5mb
 db = SQLAlchemy(app)
 
 # User Class
